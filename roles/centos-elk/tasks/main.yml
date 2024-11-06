@@ -1,0 +1,38 @@
+#### Centos Elastic stack #####
+
+- name: java installation
+  dnf:
+    name: java-1.8.0-openjdk
+    state: present
+
+- name: import gpg key of elastic repository
+  command: rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+- name: build yum cache
+  command: sudo dnf makecache
+
+- name: download elasticsearch 5.1
+  command: sudo wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.1.1.rpm
+
+#### Installing Kibana on CentOS ####
+
+- name: download kibana
+  get_url:
+    url: https://artifacts.elastic.co/downloads/kibana/kibana-8.10.2-x86_64.rpm
+    dest: /tmp/kibana.rpm
+
+- name: install kibana
+  yum:
+    name: /tmp/kibana.rpm
+    state: present
+
+- name: enable kibana service
+  systemd:
+    name: kibana
+    enabled: yes
+
+- name: start kibana service
+  systemd:
+    name: kibana
+    state: started
+
